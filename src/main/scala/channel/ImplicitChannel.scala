@@ -16,7 +16,3 @@ object ImplicitFileChannel extends ImplicitChannel {
     }
   }
 }
-
-implicit val stringEncoder: ByteEncoder[String] = StringByteEncoder
-implicit val intEncoder: ByteEncoder[Int] = IntByteEncoder
-implicit val personEncoder: ByteEncoder[Person] = PersonByteEncoder

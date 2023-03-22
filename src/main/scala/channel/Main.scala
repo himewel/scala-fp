@@ -10,6 +10,6 @@ object Main extends App {
 
   AnyFileChannel.write(person.toString, DestinationEnum.any)
   InheritanceFileChannel.write(person, DestinationEnum.inheritence)
-  TypeClassFileChannel.write(person, PersonByteEncoder, DestinationEnum.typeClass)
+  TypeClassFileChannel.write(person, ByteEncoder.PersonByteEncoder, DestinationEnum.typeClass)
   ImplicitFileChannel.write(person, DestinationEnum.implicitTypeClass)
 }
