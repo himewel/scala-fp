@@ -1,3 +1,5 @@
+package com.himewel.writechannel
+
 import scala.util.Using
 import java.io.FileOutputStream
 import java.nio.ByteBuffer
@@ -7,20 +9,24 @@ trait ByteEncoder[A] {
 }
 
 object ByteEncoder {
-  implicit object StringByteEncoder extends ByteEncoder[String] {
-    def encode(a: String): Array[Byte] = a.getBytes
-  }
+  implicit val stringByteEncoder: ByteEncoder[String] = instance[String](_.getBytes)
 
   implicit object IntByteEncoder extends ByteEncoder[Int] {
     def encode(a: Int): Array[Byte] =
       ByteBuffer
-      .allocate(8)
-      .putInt(a)
-      .array
-    }
+        .allocate(8)
+        .putInt(a)
+        .array
+  }
 
   implicit object PersonByteEncoder extends ByteEncoder[Person] {
-    def encode(a: Person): Array[Byte] = StringByteEncoder.encode(a.toString)
+    def encode(a: Person): Array[Byte] = ByteEncoder[String].encode(a.toString)
+  }
+
+  def apply[A](implicit ev: ByteEncoder[A]): ByteEncoder[A] = ev
+
+  def instance[A](f: A => Array[Byte]): ByteEncoder[A] = new ByteEncoder[A] {
+    def encode(a: A): Array[Byte] = f(a)
   }
 }
 

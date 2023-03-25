@@ -1,3 +1,5 @@
+package com.himewel.writechannel
+
 import scala.util.Using
 import java.io.FileOutputStream
 import java.nio.ByteBuffer
