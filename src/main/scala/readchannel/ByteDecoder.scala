@@ -18,3 +18,8 @@ object ByteDecoder {
     override def decode(array: Array[Byte]): Option[A] = f(array)
   }
 }
+
+implicit class ByteDecoderOps(val bytes: Array[Byte]) extends AnyVal {
+  def decode[A](implicit dec: ByteDecoder[A]): Option[A] =
+    dec.decode(bytes)
+}

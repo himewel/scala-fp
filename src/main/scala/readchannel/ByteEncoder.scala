@@ -22,3 +22,8 @@ object ByteEncoder {
     override def encode(a: A): Array[Byte] = f(a)
   }
 }
+
+implicit class ByteEncoderOps[A](val a: A) extends AnyVal {
+  def encode(implicit enc: ByteEncoder[A]): Array[Byte] =
+    enc.encode(a)
+}

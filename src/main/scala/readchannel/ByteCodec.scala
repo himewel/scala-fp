@@ -14,6 +14,9 @@ trait ByteCodec[A] extends ByteDecoder[A] with ByteEncoder[A] {
   def encode(a: A): Array[Byte]
   def decode(b: Array[Byte]): Option[A]
 }
+object ByteCodec {
+  def apply[A](implicit codec: ByteCodec[A]): ByteCodec[A] = codec
+}
 
 trait ByteCodecLaws[A] {
   def codec: ByteCodec[A]
