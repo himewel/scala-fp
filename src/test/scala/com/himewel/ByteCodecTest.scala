@@ -1,4 +1,7 @@
-import readchannel._
+package com.himewel
+
+import com.himewel.bytecodec._
+import com.himewel.laws.discipline._
 
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.prop.Configuration

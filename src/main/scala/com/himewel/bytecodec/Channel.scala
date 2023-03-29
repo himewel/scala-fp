@@ -1,4 +1,4 @@
-package readchannel
+package com.himewel.bytecodec
 
 import java.nio.ByteBuffer
 import scala.util.Try
