@@ -1,6 +1,5 @@
 import cats._
 import cats.implicits._
-import scala.collection.immutable.Range.Partial
 
 case class Account(id: Long, number: String, balance: Double, owner: String)
 

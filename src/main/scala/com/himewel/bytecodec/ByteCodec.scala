@@ -33,10 +33,10 @@ implicit object StringByteCodec extends ByteCodec[String] {
   def decode(a: Array[Byte]): Option[String] = Try(new String(a)).toOption
 }
 
-implicit def optionByteEncoder[A](implicit enc: ByteEncoder[A]): ByteEncoder[Option[A]] = 
+implicit def optionByteEncoder[A](implicit enc: ByteEncoder[A]): ByteEncoder[Option[A]] =
   new ByteEncoder[Option[A]] {
     def encode(obj: Option[A]): Array[Byte] = obj match {
-      case None => Array[Byte]()
+      case None        => Array[Byte]()
       case Some(value) => enc.encode(value)
     }
   }

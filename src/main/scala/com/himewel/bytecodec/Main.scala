@@ -5,6 +5,6 @@ object Main extends App {
   val message = ByteDecoder[String].decode(arrayTest)
   message match {
     case Some(m) => println(m)
-    case None => println("error decoding message")
+    case None    => println("error decoding message")
   }
 }
