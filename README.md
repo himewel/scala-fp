@@ -13,8 +13,8 @@ implicit val eqIdInstance: Eq[Account] = Eq.instance[Account]((a, b) => Eq[Int].
 // testing
 val a = Account(1)
 val b = Account(2)
-a === b
-a.eqv(b)
+a === b // false
+a.eqv(b) // false
 ```
 ## Order
 
@@ -30,8 +30,8 @@ implicit val orderByIdFrom: Order[Account] = Order.from((a, b) => Order.compare(
 // testing
 val a = Account(1)
 val b = Account(2)
-a compare b
-a min b
-a max b
+a compare b // -1
+a min b // Account(1)
+a max b // Account(2)
 ```
 
