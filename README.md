@@ -35,3 +35,19 @@ a min b // Account(1)
 a max b // Account(2)
 ```
 
+## Show
+
+Show its a typeclass with a goal similar to toString. When you need multiple implementations of a string representation for an object, it can be useful. Different from Eq and Order, this typeclass can be implemented with `Show.show` or `Show.fromToString`.
+
+```scala
+case class Account(id: Int, owner: String, balance: Double)
+
+val defaultShow: Show[Account] = Show.fromToString
+implicit val showOwnerAndBalance: Show[Account] = Show.show(account => s"${account.owner} -> $$${account.balance}")
+
+val account = Account(1, "Leia", 1.9)
+Show[Account].show(account) // Leia -> 1.9
+account.show // Leia -> 1.9
+defaultShow.show(account) // Account(1, Leia, 1.9)
+```
+
