@@ -8,7 +8,8 @@ case class Account(id: Int)
 
 val eqIdBy: Eq[Account] = Eq.by(_.id)
 
-implicit val eqIdInstance: Eq[Account] = Eq.instance[Account]((a, b) => Eq[Int].eqv(a.id, b.id))
+implicit val eqIdInstance: Eq[Account] = 
+  Eq.instance[Account]((a, b) => Eq[Int].eqv(a.id, b.id))
 
 // testing
 val a = Account(1)
@@ -25,7 +26,8 @@ case class Account(id: Int)
 
 val orderByIdBy: Order[Account] = Order.by(_.id)
 
-implicit val orderByIdFrom: Order[Account] = Order.from((a, b) => Order.compare(a.id, b.id))
+implicit val orderByIdFrom: Order[Account] = 
+  Order.from((a, b) => Order.compare(a.id, b.id))
 
 // testing
 val a = Account(1)
@@ -52,3 +54,24 @@ account.show // Leia -> 1.9
 defaultShow.show(account) // Account(1, Leia, 1.9)
 ```
 
+## Monoid
+
+Monoid its a typeclass with 2 methods to be implemented: `empty` and `combine`. In short, `combine` provides a way to combine two instances of a same class and `empty` represents a default instance of that object. For example, in a Int implementation of Monoid if we combine 1 and 2, we can have 3 as result. 0 can be the empty representation of Int.
+
+```scala
+case class Account(id: Int, owner: String, balance: Double)
+object Account {
+  def mergeAccounts(a1: Account, a2: Account): Account = 
+    a1.copy(balance=a1.balance + a2.balance)
+
+  implicit val combineAccount: Monoid[Account] = 
+    Monoid.instance(Account(0, "none", 0), mergeAccounts)
+}
+
+val lukeAccount = Account(1, "Luke", 2.5)
+val leiaAccount = Account(0, "Leia", 1000.5)
+
+leiaAccount |+| lukeAccount // Account(0, "Leia", 1003.0)
+List(leiaAccount, lukeAccount).combineAll // Account(0, "Leia", 1003.0)
+leiaAccount.combine(lukeAccount)  // Account(0, "Leia", 1003.0)
+```
