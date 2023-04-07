@@ -43,7 +43,8 @@ Show its a typeclass with a goal similar to toString. When you need multiple imp
 case class Account(id: Int, owner: String, balance: Double)
 
 val defaultShow: Show[Account] = Show.fromToString
-implicit val showOwnerAndBalance: Show[Account] = Show.show(account => s"${account.owner} -> $$${account.balance}")
+implicit val showOwnerAndBalance: Show[Account] =
+  Show.show(account => s"${account.owner} -> $$${account.balance}")
 
 val account = Account(1, "Leia", 1.9)
 Show[Account].show(account) // Leia -> 1.9
