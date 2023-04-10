@@ -75,3 +75,20 @@ leiaAccount |+| lukeAccount // Account(0, "Leia", 1003.0)
 List(leiaAccount, lukeAccount).combineAll // Account(0, "Leia", 1003.0)
 leiaAccount.combine(lukeAccount)  // Account(0, "Leia", 1003.0)
 ```
+
+## Functor
+
+Functor trait provides a function called `map`. Functor fits with a group of classes named High Kinded Typeclassed because its paremetrised by more then one type. This function is pametrised by types A and B and receives a container of A and a function that transforms type A to B. Finally, the function returns a container of B. Its behavior is described by the following signature: `map[A, B](fa: F[A])(f: A => B): F[B]`.
+
+```scala
+val listFunctor: Functor[List] = new Functor[List] {
+  def map[A, B](fa: List[A])(f: A -> B): List[B] =
+    fa match {
+      case Nil => Nil
+      case head :: tail => f(head) :: map(tail)(f)
+    }
+}
+
+listFunctor.map(List(1, 2, 3))(_ + 1) // List(2, 3, 4)
+listFunctor.as(List(1, 2, 3), 1) // List(1, 1, 1)
+```
