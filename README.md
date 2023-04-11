@@ -97,17 +97,7 @@ listFunctor.as(List(1, 2, 3), 1) // List(1, 1, 1)
 
 Applicative uses a concept of high kinded type in its implementation. The main goal of this typeclass is to allow the use methods like map to higher-kinded types. Kind its a classification saying how much type parameters a type requires. In this case, an ordinary type like `String` or `Int` has a proper kind represented as `*`. Beyond that, derived types like `List[Int]` has a kind of `* -> *`. In other example, `Either[Int, String]` has a kind of `* -> * -> *`. This cases are called first-order kinds. After that, higher-kinded types represents a dependency of many degrees like in curried representation `(* -> *) -> *`.
 
-In Applicative, two methods needs to be implemented: pure and ap. All that its used to implement a different approach for a multi dimensional map. Pure its used to create a container of a received value.
-
-```scala
-val optionApplicative: Applicative[Option] = new Applicative[Option] {
-  def pure[A](x: A): Option[A] = Some(x)
-  
-  def ap[A, B](ff: Option[A => B])(fa: Option[A]): Option[B] = ???
-}
-```
-
-An Applicative has also an ap method. This method receives an container of functions from A to B and a container of A values to be transformed in a container of B.
+In Applicative, two methods needs to be implemented: pure and ap. All that its used to implement a different approach for a multi dimensional map. Pure its used to create a container of a received value. An Applicative has also an ap method. This method receives an container of functions from A to B and a container of A values to be transformed in a container of B.
 
 ```scala
 val optionApplicative: Applicative[Option] = new Applicative[Option] {
@@ -119,11 +109,7 @@ val optionApplicative: Applicative[Option] = new Applicative[Option] {
       case _ => None
     }
 }
-```
 
-In a few examples
-
-```scala
 val stringOption = optionApplicative.pure("hello world") // Some(hello world)
 
 val intOption = optionApplicative.pure(5) // Some(5)
