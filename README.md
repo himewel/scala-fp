@@ -78,7 +78,7 @@ leiaAccount.combine(lukeAccount)  // Account(0, "Leia", 1003.0)
 
 ## Functor
 
-Functor trait provides a function called `map`. Functor fits with a group of classes named High Kinded Typeclassed because its paremetrised by more then one type. This function is pametrised by types A and B and receives a container of A and a function that transforms type A to B. Finally, the function returns a container of B. Its behavior is described by the following signature: `map[A, B](fa: F[A])(f: A => B): F[B]`.
+Functor trait provides a function called `map`. Functor fits with a group of classes named High Kinded Typeclassed because its paremetrised by more then one type. This function is pametrised by types A and B and receives a container of A and a function that transforms type A to B. Finally, the function returns a container of B. Its behavior is described by the following signature: `map[A, B](fa: F[A])(f: A -> B): F[B]`.
 
 ```scala
 val listFunctor: Functor[List] = new Functor[List] {
@@ -91,4 +91,44 @@ val listFunctor: Functor[List] = new Functor[List] {
 
 listFunctor.map(List(1, 2, 3))(_ + 1) // List(2, 3, 4)
 listFunctor.as(List(1, 2, 3), 1) // List(1, 1, 1)
+```
+
+## Applicative
+
+Applicative uses a concept of high kinded type in its implementation. The main goal of this typeclass is to allow the use methods like map to higher-kinded types. Kind its a classification saying how much type parameters a type requires. In this case, an ordinary type like `String` or `Int` has a proper kind represented as `*`. Beyond that, derived types like `List[Int]` has a kind of `* -> *`. In other example, `Either[Int, String]` has a kind of `* -> * -> *`. This cases are called first-order kinds. After that, higher-kinded types represents a dependency of many degrees like in curried representation `(* -> *) -> *`.
+
+In Applicative, two methods needs to be implemented: pure and ap. All that its used to implement a different approach for a multi dimensional map. Pure its used to create a container of a received value.
+
+```scala
+val optionApplicative: Applicative[Option] = new Applicative[Option] {
+  def pure[A](x: A): Option[A] = Some(x)
+  
+  def ap[A, B](ff: Option[A => B])(fa: Option[A]): Option[B] = ???
+}
+```
+
+An Applicative has also an ap method. This method receives an container of functions from A to B and a container of A values to be transformed in a container of B.
+
+```scala
+val optionApplicative: Applicative[Option] = new Applicative[Option] {
+  def pure[A](x: A): Option[A] = Some(x)
+  
+  def ap[A, B](ff: Option[A => B])(fa: Option[A]): Option[B] = 
+    (ff, fa) match {
+      case (Some(f), Some(a)) => Some(f(a))
+      case _ => None
+    }
+}
+```
+
+In a few examples
+
+```scala
+val stringOption = optionApplicative.pure("hello world") // Some(hello world)
+
+val intOption = optionApplicative.pure(5) // Some(5)
+val intOption2 = optionApplicative.pure(10) // Some(10)
+
+(intOption, intOption2).mapN((a, b) => a + b) // Some(15)
+(intOption, intOption2).map2((a, b) => a + b) // Some(15)
 ```
