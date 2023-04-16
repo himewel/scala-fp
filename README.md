@@ -78,7 +78,7 @@ leiaAccount.combine(lukeAccount)  // Account(0, "Leia", 1003.0)
 
 ## Functor
 
-Functor trait provides a function called `map`. Functor fits with a group of classes named High Kinded Typeclassed because its paremetrised by more then one type. This function is pametrised by types A and B and receives a container of A and a function that transforms type A to B. Finally, the function returns a container of B. Its behavior is described by the following signature: `map[A, B](fa: F[A])(f: A -> B): F[B]`.
+Functor trait provides a function called `map`. Functor fits with a group of classes named High Kinded Typeclasses because its parametrized by more then one type. This function is parametrized by types A and B and receives a container of A and a function that transforms type A to B. Finally, the function returns a container of B. Its behavior is described by the following signature: `map[A, B](fa: F[A])(f: A -> B): F[B]`.
 
 ```scala
 val listFunctor: Functor[List] = new Functor[List] {
