@@ -118,3 +118,33 @@ val intOption2 = optionApplicative.pure(10) // Some(10)
 (intOption, intOption2).mapN((a, b) => a + b) // Some(15)
 (intOption, intOption2).map2((a, b) => a + b) // Some(15)
 ```
+
+## Monad
+
+My extending Functor and Applicative, Monads are very similar to them. The main addition of a Monad is the `flatMap` method. This method its similar to `map` but,instead of receiving a function to other type (`A => B`), it receives a function to a container (`A => F[B]`). Of course, by extending Applicative it obligates the implementation of pure. `Map` comes as an implementation of `flatMap` and `pure`.
+
+```scala
+trait MOption[+A]
+
+object MOption {
+  case class MSome[A] extends MOption[A]
+  case object MNone extends MOption[Nothing]
+
+  implicit val monadMOption: Monad[MOption] = new Monad {
+    def pure[A](x: A): MOption[A] = MSome(x)
+
+    def flatMap[A, B](fa: MOption[A])(f: A => MOption[B]): MOption[B] =
+      fa match {
+        case MSome(value) => f(fa)
+        case MNone => MNone
+      }
+  }
+}
+```
+
+In this case, the function can be implemented as the following example:
+
+```scala
+def map[A, B](fa: MOption[A])(f: A => B): MOption[B] =
+  flatMap(fa)(a => pure(f(a)))
+```
