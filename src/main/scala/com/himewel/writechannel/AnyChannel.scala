@@ -16,7 +16,7 @@ object AnyFileChannel extends AnyChannel {
         val buffer = ByteBuffer.allocate(4)
         buffer.putInt(n)
         buffer.array()
-      case anyValue => throw Exception("Type not handled")
+      case anyValue => throw new Exception("Type not handled")
     }
 
     Using(new FileOutputStream(objDestination)) { os =>

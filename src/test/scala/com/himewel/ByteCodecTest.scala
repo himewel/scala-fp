@@ -1,6 +1,8 @@
 package com.himewel
 
 import com.himewel.bytecodec._
+import com.himewel.bytecodec.ByteDecoder._
+import com.himewel.bytecodec.ByteEncoder._
 import com.himewel.laws.discipline._
 
 import org.scalatest.funsuite.AnyFunSuite

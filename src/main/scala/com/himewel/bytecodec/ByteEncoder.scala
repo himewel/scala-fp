@@ -12,7 +12,7 @@ object ByteEncoder {
   implicit val intEncoder: ByteEncoder[Int] =
     instance[Int](i =>
       ByteBuffer
-        .allocate(8)
+        .allocate(4)
         .putInt(i)
         .array
     )
@@ -21,9 +21,17 @@ object ByteEncoder {
   def instance[A](f: A => Array[Byte]): ByteEncoder[A] = new ByteEncoder[A] {
     override def encode(a: A): Array[Byte] = f(a)
   }
-}
 
-implicit class ByteEncoderOps[A](val a: A) extends AnyVal {
-  def encode(implicit enc: ByteEncoder[A]): Array[Byte] =
-    enc.encode(a)
+  implicit def optionByteEncoder[A](implicit enc: ByteEncoder[A]): ByteEncoder[Option[A]] =
+    new ByteEncoder[Option[A]] {
+      def encode(obj: Option[A]): Array[Byte] = obj match {
+        case None        => Array[Byte]()
+        case Some(value) => enc.encode(value)
+      }
+    }
+
+  implicit class ByteEncoderOps[A](val a: A) extends AnyVal {
+    def encode(implicit enc: ByteEncoder[A]): Array[Byte] =
+      enc.encode(a)
+  }
 }
