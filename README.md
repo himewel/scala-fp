@@ -148,3 +148,47 @@ In this case, the function can be implemented as the following example:
 def map[A, B](fa: MOption[A])(f: A => B): MOption[B] =
   flatMap(fa)(a => pure(f(a)))
 ```
+
+## MonadError
+
+A MonadError presents a bit more of power to a normal Monad: the ability to handle errors. So, beyond the `pure` and `flatMap`, MonadError requires the implementation of other two methods, `handleErrorWith` and `raiseError`.
+
+```scala
+implicit val tryME: MonadError[Try, Throwable] = new MonadError[Try, Throwable] {
+  def raiseError[A](e: Throwable): Try[A] = Failure(e)
+
+  def handleErrorWith[A](fa: Try[A])(f: Throwable => Try[A]): Try[A] =
+    fa match {
+      case Success(value) => Success(value)
+      case Failure(value) => f(a)
+    }
+
+  def pure[A](a: A): Try[A] = ???
+  def flatMap[A, B](fa: Try[A])(f: A => Try[B]): Try[B] = ???
+}
+```
+
+So, in case we want to generalize an error handling for different kinded types (i.e. Try, Option, Either), we can use a signature similar to the following code. In this example, the type `F[_]` its used to represent a kinded type and `E` represents the error type of the MonadError. In addition, a function handling the error its used to transform an `Exception` into an object of type `E` (compatible with the MonadError signature).
+
+```scala
+trait HttpMethod
+object GET extends HttpMethod
+case class HttpRequest(method: HttpMethod, url: String)
+case class HttpResponse(status: Int)
+
+def executeRequest[F, E](req: HttpRequest)(f: Exception => E)(implicit ME: MonadError[F, E]): F[HttpResponse] =
+  try {
+    ME.pure(doRequest(req))
+  } catch {
+    case e: Exception => ME.raiseError(f(e))
+  }
+
+type ErrorOn[A] = Either[String, A]
+executeRequest[ErrorOn[A], String](HttpRequest(GET, "www.example.com"))((e: Exception) => e.getMessage())
+
+MonadError[Option, Unit].attempt(Some(3)) // Some(Right(3))
+MonadError[Option, Unit].attempt(None) // Some(Left(())))
+
+MonadError[Option, Unit].ensure(Some(3))(())(_ => _ % 2 == 0) // None
+MonadError[Option, Unit].ensure(Some(2))(())(_ => _ % 2 == 0) // Some(2)
+```
