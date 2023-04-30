@@ -58,6 +58,6 @@ val request = HttpRequest(Get, "www.example.com")
 println(executeRequestME[Try, Throwable](request)(_))
 
 type ErrorOr[A] = Either[String, A]
-executeRequestME[ErrorOr, String](request)((e: Exception) => e.getMessage)
+println(executeRequestME[ErrorOr, String](request)((e: Exception) => e.getMessage))
 
 println(executeRequestME[Option, Unit](request)((e: Exception) => ()))
