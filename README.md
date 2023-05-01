@@ -185,7 +185,11 @@ def executeRequest[F, E](req: HttpRequest)(f: Exception => E)(implicit ME: Monad
 
 type ErrorOn[A] = Either[String, A]
 executeRequest[ErrorOn[A], String](HttpRequest(GET, "www.example.com"))((e: Exception) => e.getMessage())
+```
 
+MonadError provides other helper methods such as `attempt` and `ensure`. `attempt` ensures that all non-fatal errors should be handled by this method. `ensure` turns a value into an error if it doesn`t matches with a provided condition.
+
+```scala
 MonadError[Option, Unit].attempt(Some(3)) // Some(Right(3))
 MonadError[Option, Unit].attempt(None) // Some(Left(())))
 
