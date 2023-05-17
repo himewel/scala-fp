@@ -196,3 +196,44 @@ MonadError[Option, Unit].attempt(None) // Some(Left(())))
 MonadError[Option, Unit].ensure(Some(3))(())(_ => _ % 2 == 0) // None
 MonadError[Option, Unit].ensure(Some(2))(())(_ => _ % 2 == 0) // Some(2)
 ```
+
+## Foldable
+
+Foldable its a typeclass extending Monoid, so it inherits methods like `empty` and `combine`.
+A Foldable implementation provides the methods `foldRight` and `foldLeft`. Both them receives a function to be executed recursively carrying an accumulator and the item to be iterated. `foldRight` puts the recursion tree at right side by calling the function using the iteration value and the recursion stack as the result of the method. In other hand, `foldLeft` does the opposite by executing the recursion using the empty value as an accumulator, so each iteration updates the accumulator for each recursion call. Because of these behaviors, `foldLeft` iterates throw the container starting by the last item so depending of the function, the result will be reversed.
+
+Recursion stack example for foldRight:
+
+```scala
+val f = (a, b) => a + b
+val list = List(1, 2, 3)
+val z = 0
+
+foldRight(list, z)(f):
+  f(1, foldRight(List(2, 3), z)(f))
+  f(1, f(2, foldRight(List(3), z)(f)))
+  f(1, f(2, f(3, foldRight(List(3), z)(f))))
+  f(1, f(2, f(3, z)))
+  f(1, f(2, 3))
+  f(1, 5)
+  6
+```
+
+Recursion stack example for foldLeft:
+
+```scala
+val f = (a, b) => a + b
+val list = List(1, 2, 3)
+val z = 0
+
+foldLeft(list, z)(f):
+  foldLeft(List(2, 3), f(z, 1))(f)
+  foldLeft(List(3), f(f(z, 1), 2))(f)
+  foldLeft(List(), f(f(f(z, 1),  2), 3))(f)
+  foldLeft(List(), f(f(1, 2), 3))(f)
+  foldLeft(List(), f(3, 3))(f)
+  6
+```
+Other useful methods from Foldable:
+- `fold`: applies combine to the values
+- `foldMap`: applies a function and `fold` the result
